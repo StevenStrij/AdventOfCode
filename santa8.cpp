@@ -38,19 +38,31 @@ int main() {
     unsigned int printChar = 0;
     unsigned int codeChar = 0;
     while (getline(file, line)) {
-        unsigned int count = line.length() - 2;
-
-        std::stringstream iss(line);
-
-        count -= countSubString(line, "\\\\");
-        count -= countSubString(line, "\\\"");
-        count -= countSubString(line, "\\x")*3;
-
-        printChar += count;
-        codeChar += line.length();
-        std::cout << "String was " << line << std::endl;
-        std::cout << "\tCoded: " << line.length() << std::endl;
-        std::cout << "\tPrint: " << count << std::endl;
+        bool inEscape = false;
+        unsigned int count = 0;
+        for (auto ch = line.begin(); ch != line.end(); ++ch) {
+            if (*ch == '\"') {
+                if (inEscape) {
+                    count += 2;
+                    inEscape = false;
+                } else {
+                    count += 3;
+                }
+            } else if (*ch == '\\') {
+                inEscape = !inEscape;
+                count += 2;
+            } else if (*ch == 'x') {
+                if (inEscape) {
+                    inEscape = false;
+                }
+                ++count;
+            } else {
+                ++count;
+            }
+        }
+        std::cout << "To print out is " << count << " for " << line << std::endl;
+        printChar += line.length();
+        codeChar += count;
     }
 
     file.close();
