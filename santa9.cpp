@@ -26,7 +26,7 @@ int main() {
 
     for (auto e = edges.begin(); e != edges.end(); ++e) {
         std::cout << e->first << std::endl;
-        for (auto q = e->second.begin(); q != e->second.end(); ++e) {
+        for (auto q = e->second.begin(); q != e->second.end(); ++q) {
             std::cout << "\t" << q->first << " = " << q->second << std::endl;
         }
     }
