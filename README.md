@@ -1,2 +1,0 @@
-# AdventOfCode
-Solutions for Advent Of Code 2015
