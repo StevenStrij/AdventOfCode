@@ -83,10 +83,6 @@ int main() {
     std::string curr = "hxbxxyzz";
     next(curr);
 
-    std::cout << "Rule 1 " << solvesRule1("ghjaabcc") << std::endl;
-    std::cout << "Rule 2 " << solvesRule2("ghjaabcc") << std::endl;
-    std::cout << "Rule 3 " << solvesRule3("ghjaabcc") << std::endl;
-
     while (!(solvesRule1(curr) && solvesRule2(curr) && solvesRule3(curr))) {
         next(curr);
     }

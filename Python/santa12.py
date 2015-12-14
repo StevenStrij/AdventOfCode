@@ -9,7 +9,6 @@ for line in fin:
 
 parsedJson = json.loads(data)
 
-
 def getNum(element):
 
     sum = 0

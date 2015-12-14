@@ -32,16 +32,30 @@ void getNextR1(std::string& str) {
     alpha['y'] = 24;
     alpha['z'] = 25;
 
-    bool found = false;
-    for (std::string::reverse_iterator c = str.rbegin(); c != str.rend() - 1; ++c) {
-        if (alpha[*c] == alpha[*(c + 1)] + 1) {
-            found = true;
+    std::string::reverse_iterator pos;
+    for (std::string::reverse_iterator c = str.rbegin() + 1; c != str.rend() - 1; ++c) {
+        if (alpha[*c] < alpha[*(c + 1)] + 1) {
+            pos = c;
+            break;
         }
     }
+
+    std::cout << "Found at position: " << *pos << std::endl;
+
+    *pos = *(pos + 1) + 1;
+    *(pos - 1) = *pos + 1;
+
+    //for (std::string::reverse_iterator c = pos - 1; c != str.rbegin(); ++c) {
+    //    *c = 'a';
+    //}
 }
 
 int main() {
+    std::string curr = "hxbxwxbb";
+    std::cout << curr << std::endl;
+    getNextR1(curr);
+    getNextR1(curr);
+    std::cout << curr << std::endl;
 
-    std::string curr = "hxbxwxba"
     return 0;
 }
