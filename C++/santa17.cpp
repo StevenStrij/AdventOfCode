@@ -2,6 +2,8 @@
 #include <fstream>
 #include <map>
 #include <vector>
+#include <iterator>
+#include <algorithm>
 
 std::map<std::vector<int>, bool> seen;
 
@@ -11,6 +13,7 @@ int getAmount(const std::vector<int>& buckets, std::vector<int> at, int amount) 
         return 1;
     }
     if (seen.find(at) != seen.end()) return 0;
+    sort(at.begin(), at.end());
     seen[at] = true;
 
     int sum = 0;
@@ -31,6 +34,9 @@ int main() {
     while (getline(file, line)) {
         buckets.push_back(stoi(line));
     }
+
+    copy(buckets.begin(), buckets.end(), std::ostream_iterator<int>(std::cout, " "));
+    std::cout << std::endl;
 
     std::vector<int> t;
     std::cout << getAmount(buckets, t, 150) << std::endl;;
