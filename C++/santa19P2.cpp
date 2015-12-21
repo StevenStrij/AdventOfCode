@@ -24,6 +24,7 @@ void search(RuleBook& rules, std::string end) {
     states.push_back(end);
 
     unsigned int q = 0;
+    unsigned int w = end.length();
     while (states.size()) {
         currState = states.back();
         states.pop_back();
@@ -33,19 +34,6 @@ void search(RuleBook& rules, std::string end) {
         }
 
         ++q;
-        if (q % 10000 == 0) {
-            unsigned int min = currState.length();
-            std::for_each(states.begin(), states.end(),
-                            [&min] (const State& s) {
-                                if (s.curr.length() < min) {
-                                    min = s.curr.length();
-                                }
-                            });
-
-            std::cout << "Min is " << min << std::endl;
-
-            q = 1;
-        }
 
         //if (q != currState.steps) {
         //    std::cout << "Max was: " << max << std::endl;
@@ -61,14 +49,37 @@ void search(RuleBook& rules, std::string end) {
             for (auto part = currState.find(rule.first); part != std::string::npos;
                     part = currState.find(rule.first, part + 1)) {
 
+                unsigned int min1 = end.length();
+                std::for_each(states.begin(), states.end(),
+                                [&min1] (const std::string& s) {
+                                    if (s.length() < min1) {
+                                        min1 = s.length();
+                                    }
+                            });
+                
                 t = currState;
                 t.replace(part, rule.first.length(), rule.second, 0, rule.second.length());
 
                 if (seen.find(t) != seen.end()) continue;
-                std::cout << "Before: " << currState.length() << " after " << t.length() << std::endl;
 
                 seen[t] = true;
                 states.push_back(t);
+
+                unsigned int min2 = end.length();
+                std::for_each(states.begin(), states.end(),
+                                [&min2] (const std::string& s) {
+                                    if (s.length() < min2) {
+                                        min2 = s.length();
+                                    }
+                            });
+                
+
+                if (min1 != min2 && min2 != t.length()) {
+                    std::cout << "Before " << currState << std::endl;
+                    std::cout << "After  " << t << std::endl;
+                    std::cout << "wth" << std::endl;
+                    return;
+                }
             }
         }
     }
