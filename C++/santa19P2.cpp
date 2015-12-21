@@ -40,6 +40,26 @@ int main() {
     std::cout << "Goal is " << genome << std::endl;
     for (auto e : rules) {
         std::cout << e.first << " => " << e.second << std::endl;
+    }
 
+    std::vector<std::string> toSearch{genome};
+    while (toSearch.size()) {
+        std::string currentStr = toSearch.back();
+        toSearch.pop_back();
+
+        if (currentStr == "e") {
+            std::cout << "Found!" << std::endl;
+            break;
+        }
+
+        for (auto rule : rules) {
+            for (auto app = currentStr.find(rule.first); app != std::string::npos;
+                      app = currentStr.find(rule.first, app + 1)) {
+
+                std::string t = currentStr;
+                t.replace(app, rule.first.length(), rule.second); 
+                toSearch.push_back(t);
+            }
+        }
     }
 }
