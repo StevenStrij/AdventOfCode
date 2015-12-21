@@ -5,33 +5,11 @@
 #include <iterator>
 #include <algorithm>
 
-std::map<std::vector<int>, bool> seen;
-
-int getAmount(const std::vector<int>& buckets, std::vector<int> at, int amount) {
-    if (amount < 0) return 0;
-
-    sort(at.begin(), at.end());
-    if (seen.find(at) != seen.end()) return 0;
-
-    seen[at] = true;
-    if (amount == 0) {
-        return 1;
-    }
-
-    int sum = 0;
-    for (auto i : buckets) {
-        std::vector<int> t(at);
-        t.push_back(i);
-        sum += getAmount(buckets, t, amount - i);
-    }
-
-    return sum;
-}
-
 int main() {
     std::ifstream file("in");
     std::string line;
     std::vector<int> buckets;
+    int goal = 150;
 
     while (getline(file, line)) {
         buckets.push_back(stoi(line));
@@ -40,6 +18,34 @@ int main() {
     copy(buckets.begin(), buckets.end(), std::ostream_iterator<int>(std::cout, " "));
     std::cout << std::endl;
 
-    std::vector<int> t;
-    std::cout << getAmount(buckets, t, 150) << std::endl;;
+    int found = 0;
+    int min = buckets.size();
+    int numBuckets = 0;
+    for (unsigned int i = 0; i < (1 << buckets.size()); ++i) {
+        int sum = 0;
+        int p = 0;
+        int q = i;
+        numBuckets = 0;
+        while (q) {
+            if (q % 2) {
+                sum += buckets[p];
+                ++numBuckets;
+            }
+            q >>= 1;
+            ++p;
+        }
+
+        if (sum == goal) {
+            if (numBuckets < min) {
+                std::cout << "New min is " << numBuckets << std::endl;
+                min = numBuckets;
+                found = 0;
+            }
+            if (numBuckets == min) {
+                ++found;
+            }
+        }
+    }
+
+    std::cout << found << std::endl;
 }
