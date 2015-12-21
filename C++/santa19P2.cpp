@@ -6,44 +6,69 @@
 #include <algorithm>
 #include <iterator>
 
-typedef std::map<std::string, std::vector<std::string> > RuleBook;
+typedef std::map<std::string, std::string> RuleBook;
 
 class State {
     public:
         unsigned int steps = 0;
         std::string curr;
 
-        State(std::string c, unsigned int s) : steps{s}, curr{c} {}
+        State(std::string c, unsigned int s) { curr = c; steps = s; }
 };
 
-void search(RuleBook& rules, std::string& end) {
+void search(RuleBook& rules, std::string end) {
     std::vector<State> states;
     std::map<std::string, bool> seen;
 
     State currState("", 0);
-    states.push_back(State("e", 0));
+    states.push_back(State(end, 0));
 
+    unsigned int q = 0;
     while (states.size()) {
         currState = states.back();
         states.pop_back();
 
-        if (currState.curr == end) {
+        if (currState.curr == "e") {
             break;
         }
 
-        for (auto rule : rules) {
-            for (auto part = currState.curr.find(rule.first); part != std::string::npos;
-                      part = currState.curr.find(rule.first, part + 1)) {
-                
-                for (auto app : rule.second) {
-                    std::string t = currState.curr;
-                    t.replace(part, rule.first.length(), app, 0, app.length());
+        ++q;
+        if (q % 10000 == 0) {
+            unsigned int min = currState.curr.length();
+            std::for_each(states.begin(), states.end(),
+                            [&min] (const State& s) {
+                                if (s.curr.length() < min) {
+                                    min = s.curr.length();
+                                }
+                            });
 
-                    if (currState.curr.length() <= end.length() && seen.find(t) == seen.end()) {
-                        seen[t] = true;
-                        states.push_back(State(t, currState.steps + 1));
-                    }
-                }
+            std::cout << "Min is " << min << std::endl;
+
+            q = 1;
+        }
+
+        //if (q != currState.steps) {
+        //    std::cout << "Max was: " << max << std::endl;
+        //    for (auto i = states.rbegin(); i != states.rbegin() + 5; ++i) {
+        //        std::cout << "\t" << i->curr.length() << std::endl;
+        //    }
+        //    std::cout << std::endl;
+        //    max = 0;
+        //}
+
+        for (auto rule : rules) {
+            std::string t = "";
+            for (auto part = currState.curr.find(rule.first); part != std::string::npos;
+                    part = currState.curr.find(rule.first, part + 1)) {
+
+                t = currState.curr;
+                t.replace(part, rule.first.length(), rule.second, 0, rule.second.length());
+
+                if (seen.find(t) != seen.end()) continue;
+                std::cout << "Before: " << currState.curr.length() << " after " << t.length() << std::endl;
+
+                seen[t] = true;
+                states.push_back(State(t, currState.steps + 1));
             }
         }
     }
@@ -74,7 +99,7 @@ int main() {
                         std::istream_iterator<std::string>(),
                         std::back_inserter(tokens));
 
-                rules[tokens[0]].push_back(tokens[2]);
+                rules[tokens[2]] = tokens[0];
             }
         }
     }
