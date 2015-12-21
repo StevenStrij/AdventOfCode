@@ -17,24 +17,24 @@ class State {
 };
 
 void search(RuleBook& rules, std::string end) {
-    std::vector<State> states;
+    std::vector<std::string> states;
     std::map<std::string, bool> seen;
 
-    State currState("", 0);
-    states.push_back(State(end, 0));
+    std::string currState = "";
+    states.push_back(end);
 
     unsigned int q = 0;
     while (states.size()) {
         currState = states.back();
         states.pop_back();
 
-        if (currState.curr == "e") {
+        if (currState == "e") {
             break;
         }
 
         ++q;
         if (q % 10000 == 0) {
-            unsigned int min = currState.curr.length();
+            unsigned int min = currState.length();
             std::for_each(states.begin(), states.end(),
                             [&min] (const State& s) {
                                 if (s.curr.length() < min) {
@@ -58,21 +58,20 @@ void search(RuleBook& rules, std::string end) {
 
         for (auto rule : rules) {
             std::string t = "";
-            for (auto part = currState.curr.find(rule.first); part != std::string::npos;
-                    part = currState.curr.find(rule.first, part + 1)) {
+            for (auto part = currState.find(rule.first); part != std::string::npos;
+                    part = currState.find(rule.first, part + 1)) {
 
-                t = currState.curr;
+                t = currState;
                 t.replace(part, rule.first.length(), rule.second, 0, rule.second.length());
 
                 if (seen.find(t) != seen.end()) continue;
-                std::cout << "Before: " << currState.curr.length() << " after " << t.length() << std::endl;
+                std::cout << "Before: " << currState.length() << " after " << t.length() << std::endl;
 
                 seen[t] = true;
-                states.push_back(State(t, currState.steps + 1));
+                states.push_back(t);
             }
         }
     }
-    std::cout << "Found after " << currState.steps << " steps" << std::endl;
 }
 
 int main() {
