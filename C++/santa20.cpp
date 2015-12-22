@@ -2,32 +2,23 @@
 #include <string>
 #include <fstream>
 #include <algorithm>
+#include <map>
 
 bool analyse = false;
 
 unsigned long getNum(const unsigned long& num) {
 
     int sum = 0;
-    unsigned long atNum = 1;
-    unsigned long lim = num / 2;
-    unsigned long numFactors = 0;
+    int atNum = 1;
+    int lim = (int)std::sqrt(num);
 
     while (atNum <= lim) {
-        if (num % atNum == 0) {
-            sum += atNum*10;
-            ++numFactors;
+        if (atNum % num == 0) {
+            sum += atNum * 10 * (num / atNum);
         }
-
         ++atNum;
     }
     sum += num * 10;
-
-    if (analyse) {
-        std::cout << "Number: " << num << ", " <<
-                     "Sum: " << sum << ", " <<
-                     "NumFactors: " << numFactors << std::endl;
-                 
-    }
     return sum;
 }
 
@@ -39,12 +30,11 @@ int main(int argc, char* argv[]) {
     unsigned long atNum = 0;
     unsigned long sum = 1;
 
-    while (sum < in) {
+    while (sum < in && atNum < 10) {
         ++atNum;
         sum = getNum(atNum);
 
-        if (atNum % 1000 == 0) {
-            std::cout << atNum << " " << sum << std::endl;
-        }
+        std::cout << atNum << " " << sum << std::endl;
     }
+    std::cout << atNum << std::endl;
 }
